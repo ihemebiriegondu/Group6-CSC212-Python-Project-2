@@ -1,0 +1,1 @@
+To draw the pie chart, I need to get the total counts, the count for each genre and the convert it to degrees
