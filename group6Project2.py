@@ -70,7 +70,7 @@ class MainPage:
         genresTotalCount = []
 
         # empty array to add all genres total count in degrees
-        genresTotalCountsInDegrees = []
+        self.genresTotalCountsInDegrees = []
 
         # searching through the dataGenreswithCount array to see which contains the adventure genre
         # and getting the count of the genre with 'dataGenreswithCount[i][1]'
@@ -272,31 +272,38 @@ class MainPage:
         # finding the sum of all the counts
         totalCounts = sum(genresTotalCount)
 
-        # converting all total genres to degrees and apending it to the empty genresTotalCountsInDegrees array
+        # converting all total genres to degrees and apending it to the empty self.genresTotalCountsInDegrees array
         for i in genresTotalCount:
             degrees = round(i / totalCounts * 360, 1)
-            genresTotalCountsInDegrees.append(degrees)
+            self.genresTotalCountsInDegrees.append(degrees)
         # print(genresTotalCount)
-        #print(genresTotalCountsInDegrees)
-        #print(sum(genresTotalCountsInDegrees))
+        # print(self.genresTotalCountsInDegrees)
+        # print(sum(self.genresTotalCountsInDegrees))
 
-        # plotting the graph
-        # Data to plot
-        labels = 'Adventure', 'Romance', 'Thriller', 'Drama', 'Fantasy', 'Family', 'Animation', 'Comedy', 'Action', 'Crime', 'Horror', 'History', 'Science Fiction', 'Mystery', 'Documentary',  'War', 'Foreign', 'Music', 'Western'
-        
-        sizes = genresTotalCountsInDegrees
-        colors = ['gold', 'yellowgreen', 'lightcoral', 'green', 'yellow', 'brown', 'purple', 'blue', 'red', 'pink', 'lime', 'magenta', 'orange', 'aquamarine', 'yellowgreen', 'coral', 'crimson', 'yellow', 'cyan']
-        explode = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0.1, 1.0, 0.2, 1.0, 0.3, 0.2)  # explode 1st slice
-
-        # Plot
-        pie = plt.pie(sizes, explode=explode, labels=labels, colors=colors,
-                autopct='%1.1f%%', shadow=False, startangle=140)
-        plt.legend(pie[0], labels, loc="upper right")
-
-        plt.axis('equal')
-        plt.show()
+        self.label = Label(text='Movies genre')
+        self.button = Button(text='Show pie chart', command=self.showGraph)
+        self.button.pack(side=TOP, anchor=CENTER)
 
         window.mainloop()
 
+
+    def showGraph(self):
+            # plotting the graph
+            # Data to plot
+            labels = 'Adventure', 'Romance', 'Thriller', 'Drama', 'Fantasy', 'Family', 'Animation', 'Comedy', 'Action', 'Crime', 'Horror', 'History', 'Science Fiction', 'Mystery', 'Documentary',  'War', 'Foreign', 'Music', 'Western'
+
+            sizes = self.genresTotalCountsInDegrees
+            colors = ['gold', 'yellowgreen', 'lightcoral', 'green', 'yellow', 'brown', 'purple', 'blue', 'red',
+                  'pink', 'lime', 'magenta', 'orange', 'aquamarine', 'yellowgreen', 'coral', 'crimson', 'yellow', 'cyan']
+            explode = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0.1,
+                   1.0, 0.2, 1.0, 0.3, 0.2)  # explode 1st slice
+
+            # Plot
+            pie = plt.pie(sizes, explode=explode, labels=labels, colors=colors,
+                      autopct='%1.1f%%', shadow=False, startangle=140)
+            plt.legend(pie[0], labels, loc="upper right")
+
+            plt.axis('equal')
+            plt.show()
 
 MainPage()
