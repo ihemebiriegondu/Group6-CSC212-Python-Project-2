@@ -10,20 +10,21 @@ class MainPage:
 
         window = Tk()
         window.title("Group six (6) project")
-        window.geometry("900x500")
+        window.geometry("900x600")
 
+    
             # set frame for the search field
         self.frame1 = Frame(window, bg='white')
-        self.frame1.pack(fill="both", expand=True, ipady=40)
+        self.frame1.pack(fill="both", expand=True, ipady=20)
 
             #app info name
         topLabel = Label(self.frame1, text="Movie Search App", anchor='n', padx=20,
-                        pady=30, bg='white', fg='#dd1717', font=('Arial Bold', 17), justify=CENTER)
+                        pady=20, bg='white', fg='#dd1717', font=('Arial Bold', 17), justify=CENTER)
         topLabel.pack()
 
             #mini frame for the input fields
         self.frame1b = Frame(self.frame1, bg='white')
-        self.frame1b.pack(pady=20)
+        self.frame1b.pack(pady=5)
 
             #search input label
         searchValue = Label(self.frame1b, text="Enter movie name", anchor='w', padx=20,
@@ -64,14 +65,6 @@ class MainPage:
                         pady=15, bg='white', fg='black', font=('Arial semibold', 13), justify=LEFT, width=100)
         self.movieTitle.pack(anchor='w')
 
-        self.movieOverviewTitle = Label(self.frame2b, text='Movie Overview: ', anchor='w', padx=20,
-                        pady=10, bg='white', fg='black', font=('Arial semibold', 13), justify=LEFT)
-        self.movieOverviewTitle.pack(anchor='w')
-
-        self.movieOverview = Label(self.frame2b, text='', anchor='w', padx=30,
-                        pady=15, bg='white', fg='black', font=('Arial semibold', 13), justify=LEFT, width=50)
-        self.movieOverview.pack(anchor='w')
-
         self.movieGenresHeading = Label(self.frame2b, text='Genres: ', anchor='w', padx=20,
                         pady=10, bg='white', fg='black', font=('Arial semibold', 13), justify=LEFT)
         self.movieGenresHeading.pack(anchor='w')
@@ -99,6 +92,15 @@ class MainPage:
                 pady=0, bg='white', fg='blue', cursor='hand2', font=('Arial semibold', 13), justify=LEFT)
         self.moviehomepage.pack(anchor='w')
 
+        self.movieOverviewTitle = Label(self.frame2b, text='Movie Overview: ', anchor='w', padx=20,
+                        pady=10, bg='white', fg='black', font=('Arial semibold', 13), justify=LEFT)
+        self.movieOverviewTitle.pack(anchor='w')
+
+        backButton = Button(self.frame2, text='Back', font=('Arial semibold', 13), relief='flat', bg='#ff4949', 
+        activebackground='#ff4949', activeforeground='white',fg='white', cursor="hand2",command=self.goBack)
+        backButton.pack(pady=15, padx=20,ipadx=30, ipady=10, anchor='ne', side=BOTTOM)
+
+       
         window.mainloop()
 
 
@@ -134,7 +136,7 @@ class MainPage:
 
                 # extracting data in json format
             newData = newr.json()
-            print(newData)
+            #print(newData)
 
                 #getting informations from the json file (python dictionary)
             originalTitle = newData['original_title'].upper()
@@ -175,10 +177,33 @@ class MainPage:
             self.movieposter.bind("<Button-1>", lambda e:
             linkChange(movieImageUrl))
 
+                #canvas for displaying overview marquee
+            self.canvas=Canvas(self.frame2b,bg='white')
+            self.canvas.pack(fill= X,expand=TRUE, padx=30)
+            
+                #adding the movie overview to the marquee animation
+            def shift():
+                x1,y1,x2,y2 = self.canvas.bbox("marquee")
+                if(x2<0 or y1<0): #reset the coordinates
+                    x1 = self.canvas.winfo_width()
+                    y1 = self.canvas.winfo_height()//2
+                    self.canvas.coords("marquee",x1,y1)
+                else:
+                    self.canvas.move("marquee", -2, 0)
+                self.canvas.after(1000//self.fps,shift)
 
-                #adding the overview to the overview label
-            self.movieOverview['text'] = overview
 
+            self.text_var = overview
+            text=self.canvas.create_text(0,-2000, text=self.text_var, font=('Arial semibold', 11), fill='black',tags=("marquee",),anchor='w')
+            x1,y1,x2,y2 = self.canvas.bbox("marquee")
+            width = x2-x1
+            height = y2-y1
+            self.canvas['width']=width
+            self.canvas['height']=height
+            self.fps=40
+
+            shift()
+            
 
                 #adding the homepage link to the homepage label
             self.moviehomepage['text'] = movieHomepage
@@ -193,7 +218,16 @@ class MainPage:
                 #close the first frame and open the second
             self.frame2.pack(fill="both", expand=True, ipady=40)
             self.frame1.forget()
-            
+
+
+    def goBack(self):
+        self.frame1.pack(fill="both", expand=True)
+        self.frame2.forget()
+
+        self.movieTitle['text'] = 'Original Title: '
+        self.text_var = ''
+        self.fps=''
+        self.canvas.forget()
 
 
 MainPage()
