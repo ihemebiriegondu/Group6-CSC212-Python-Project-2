@@ -1,6 +1,7 @@
 import requests
 from tkinter import *
 import tkinter.messagebox
+import webbrowser
 
 
 
@@ -52,7 +53,7 @@ class MainPage:
 
             #title of the second frame
         detailsFrameTitle = Label(self.frame2, text='Movie Details', anchor='n', padx=20,
-                        pady=25, bg='white', fg='black', font=('Arial', 16), justify=CENTER)
+                        pady=20, bg='white', fg='black', font=('Arial', 16), justify=CENTER)
         detailsFrameTitle.pack()
 
         self.frame2b = Frame(self.frame2, bg='white')
@@ -62,9 +63,41 @@ class MainPage:
         self.movieTitle = Label(self.frame2b, text='Original Title: ', anchor='w', padx=20,
                         pady=15, bg='white', fg='black', font=('Arial semibold', 13), justify=LEFT, width=100)
         self.movieTitle.pack(anchor='w')
+
+        self.movieOverviewTitle = Label(self.frame2b, text='Movie Overview: ', anchor='w', padx=20,
+                        pady=10, bg='white', fg='black', font=('Arial semibold', 13), justify=LEFT)
+        self.movieOverviewTitle.pack(anchor='w')
+
+        self.movieOverview = Label(self.frame2b, text='', anchor='w', padx=30,
+                        pady=15, bg='white', fg='black', font=('Arial semibold', 13), justify=LEFT, width=50)
+        self.movieOverview.pack(anchor='w')
+
         self.movieGenresHeading = Label(self.frame2b, text='Genres: ', anchor='w', padx=20,
                         pady=10, bg='white', fg='black', font=('Arial semibold', 13), justify=LEFT)
         self.movieGenresHeading.pack(anchor='w')
+
+                #creating new label for diplaying all the genres
+        self.genreList = Label(self.frame2b, text='', font=('Arial 13'), padx=30, 
+                bg='white', fg='black', justify=LEFT)
+        self.genreList.pack(anchor=W)
+
+        moviePosterTitle = Label(self.frame2b, text='Movie Poster: ', anchor='w', padx=20,
+                        pady=10, bg='white', fg='black', font=('Arial semibold', 13), justify=LEFT)
+        moviePosterTitle.pack(anchor=W)
+
+                #label to add movie poster link
+        self.movieposter = Label(self.frame2b, text='', anchor='w', padx=30,
+                pady=0, bg='white', fg='blue', cursor='hand2', font=('Arial semibold', 13), justify=LEFT)
+        self.movieposter.pack(anchor='w')
+
+        movieHomepageTitle = Label(self.frame2b, text='Movie Homepage: ', anchor='w', padx=20,
+                        pady=10, bg='white', fg='black', font=('Arial semibold', 13), justify=LEFT)
+        movieHomepageTitle.pack(anchor=W)
+
+                #label to add movie homepage link
+        self.moviehomepage = Label(self.frame2b, text='', anchor='w', padx=30,
+                pady=0, bg='white', fg='blue', cursor='hand2', font=('Arial semibold', 13), justify=LEFT)
+        self.moviehomepage.pack(anchor='w')
 
         window.mainloop()
 
@@ -103,24 +136,24 @@ class MainPage:
             newData = newr.json()
             print(newData)
 
-                #getting infromations from the json file (python dictionary)
+                #getting informations from the json file (python dictionary)
             originalTitle = newData['original_title'].upper()
             genres = newData['genres']
+            movieImageUrl = 'https://image.tmdb.org/t/p/w500/'+newData['poster_path']
+            overview = newData['overview']
+            movieHomepage = newData['homepage']
 
-            #getting the genre's name from each dictionary and storing them in the genreArray variable
+                #using the informations gotten
+
+                #adding the original title of the movie to the 'movie title' label
+            self.movieTitle['text'] += originalTitle
+
+                #getting the genre's name from each dictionary and storing them in the genreArray variable
             genreArray = []
             for i in genres:
                 #print(i)
                 genreArray.append(i['name'])
             #print(genreArray)
-
-
-                #adding the original title of the movie to the 'movie title' label
-            self.movieTitle['text'] += originalTitle
-                #creating new label for diplaying all the genres
-            self.genreList = Label(self.frame2b, text='', font=('Arial 13'), padx=30, 
-                    bg='white', fg='black', justify=LEFT)
-            self.genreList.pack(anchor=W)
 
             def addGenreToGenreList():
                 genre = ''
@@ -131,7 +164,27 @@ class MainPage:
                 # adding the texts to the genreList label created above
             self.genreList['text'] = addGenreToGenreList()
 
+            
+                #function for changing the movie image link into a clickable link
+            def linkChange(url):
+                webbrowser.open_new_tab(url)
 
+                #adding the original title of the movie to the 'movie title' label
+            self.movieposter['text'] = movieImageUrl
+                #Create a Label to display the link
+            self.movieposter.bind("<Button-1>", lambda e:
+            linkChange(movieImageUrl))
+
+
+                #adding the overview to the overview label
+            self.movieOverview['text'] = overview
+
+
+                #adding the homepage link to the homepage label
+            self.moviehomepage['text'] = movieHomepage
+                #Create a Label to display the link
+            self.moviehomepage.bind("<Button-1>", lambda e:
+            linkChange(movieHomepage))
 
                 #clear input field
             self.searchEntry.delete(0, END)
