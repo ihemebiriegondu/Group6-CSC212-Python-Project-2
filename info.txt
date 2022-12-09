@@ -1,1 +1,9 @@
-To draw the pie chart, I need to get the total counts, the count for each genre and the convert it to degrees
+Created two get requests
+
+1. The first request search for the info based on the name of the movie inputted
+    Because its searching with the name it doesnt bring out the movie genre instead it just brings out the id
+
+    So after the first request I get the id of the movie searched
+
+2. The second request then searches with the id instead of with the name as the earlier get request
+    and searching with the id instead of the name brings out the list of the genre not just their id
