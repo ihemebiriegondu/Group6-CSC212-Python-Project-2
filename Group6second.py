@@ -2,6 +2,7 @@ import requests
 from tkinter import *
 import tkinter.messagebox
 import webbrowser
+import matplotlib.pyplot as plt
 
 
 
@@ -96,9 +97,13 @@ class MainPage:
                         pady=10, bg='white', fg='black', font=('Arial semibold', 13), justify=LEFT)
         self.movieOverviewTitle.pack(anchor='w')
 
+        showPiechartButton = Button(self.frame2, text='Genre pie chart', font=('Arial semibold', 13), relief='flat', bg='#ff4949', 
+        activebackground='#ff4949', activeforeground='white',fg='white', cursor="hand2",command=self.showPiechart)
+        showPiechartButton.pack(pady=15, padx=20,ipadx=30, ipady=10, anchor='s', side=LEFT)
+
         backButton = Button(self.frame2, text='Back', font=('Arial semibold', 13), relief='flat', bg='#ff4949', 
         activebackground='#ff4949', activeforeground='white',fg='white', cursor="hand2",command=self.goBack)
-        backButton.pack(pady=15, padx=20,ipadx=30, ipady=10, anchor='ne', side=BOTTOM)
+        backButton.pack(pady=15, padx=20,ipadx=30, ipady=10, anchor='s', side=RIGHT)
 
        
         window.mainloop()
@@ -151,16 +156,16 @@ class MainPage:
             self.movieTitle['text'] += originalTitle
 
                 #getting the genre's name from each dictionary and storing them in the genreArray variable
-            genreArray = []
+            self.genreArray = []
             for i in genres:
                 #print(i)
-                genreArray.append(i['name'])
-            #print(genreArray)
+                self.genreArray.append(i['name'])
+            #print(self.genreArray)
 
             def addGenreToGenreList():
                 genre = ''
-                for i in range(len(genreArray)):
-                    genre = genre + genreArray[i]+'\n'
+                for i in range(len(self.genreArray)):
+                    genre = genre + self.genreArray[i]+'\n'
                 return genre
 
                 # adding the texts to the genreList label created above
@@ -220,6 +225,28 @@ class MainPage:
             self.frame1.forget()
 
 
+    def showPiechart(self):
+        #print(self.genreArray)
+            #getting equal percentage for each genre
+        getSize = round(100 / len(self.genreArray), 2)
+        self.sizesArray = []
+        for i in range(len(self.genreArray)):
+            self.sizesArray.append(getSize)
+        #print(self.sizesArray)
+
+            #data for plotting the graph
+        labels = self.genreArray
+        sizes = self.sizesArray
+        colors = ['gold', 'blue', 'yellowgreen', 'lightcoral', 'green', 'purple', 'red', 'cyan']
+
+            #plotting
+        pie = plt.pie(sizes, labels=labels, colors=colors, shadow=False, startangle=140)
+        plt.legend(pie[0], labels, loc='upper right')
+
+        plt.axis('equal')
+        plt.show()
+
+
     def goBack(self):
         self.frame1.pack(fill="both", expand=True)
         self.frame2.forget()
@@ -227,6 +254,7 @@ class MainPage:
         self.movieTitle['text'] = 'Original Title: '
         self.text_var = ''
         self.fps=''
+        self.sizesArray = []
         self.canvas.forget()
 
 
