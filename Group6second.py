@@ -47,6 +47,10 @@ class MainPage:
         searchButton = Button(self.frame1b, text='Search', font=('Arial semibold', 13), relief='flat', bg='#ff4949', activebackground='#ff4949', activeforeground='white',fg='white', cursor="hand2",command=self.searchMovie)
         searchButton.pack(pady=15, padx=20,ipadx=30, ipady=10, anchor='e')
 
+            #network connection alert
+        self.alert = Label(self.frame1, text="Make sure you have a stable internet connection!!!", anchor='w', padx=20,
+                        pady=20, bg='white', fg='red', font=('Arial semibold', 13), justify=LEFT)
+
 
             #frame 2 for displaying the searched movie details
         self.frame2 = Frame(window, bg='white')
@@ -121,8 +125,12 @@ class MainPage:
                 #url for sending the get request
             URL = 'https://api.themoviedb.org/3/search/movie?api_key=2bb667341550fea3ae5c335a339c8ead&query='+self.movie_Name
 
+            try:
                 # sending get request and saving the response as response object
-            r = requests.get(url=URL)
+                r = requests.get(url=URL)
+            except:
+                #if no network connection, it shows the error label
+                self.alert.pack(anchor='w', side=BOTTOM)
 
                 # extracting data in json format
             data = r.json()
@@ -256,6 +264,8 @@ class MainPage:
         self.fps=''
         self.sizesArray = []
         self.canvas.forget()
+
+        self.alert.forget()
 
 
 MainPage()
